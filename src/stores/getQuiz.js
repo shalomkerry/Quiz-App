@@ -3,9 +3,17 @@ const quizStore= create((set)=>{
     return {
         questions:[],
         correctAnswer:'',
-        setQuestions:(question)=>set([...questions,question]),
+        categories:[],
+        setQuestions:(question)=>set((state)=>({questions:[...state.questions,question]})),
         setCorrectAnswer:(correctAnswer)=>set(correctAnswer),
-        
+        setCategory:(category)=>set((state)=>{
+            if(!state.categories.includes(category)){
+                return {category:[...state.categories,category]
+            }
+    }}),
+
+        }
+    
     }
-})
+)
 export default quizStore;
