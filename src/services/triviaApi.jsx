@@ -1,13 +1,18 @@
 import useSWR from "swr";
+import quizStore from "../stores/getQuiz";
 const fetcher = (...args)=> fetch(...args).then((res)=>res.json());
 const Swr = ()=>{
+const categories = quizStore((state)=>state.categories)
+if(categories){
+console.log(categories)
+const category = categories.split(',')
     const {
         data:quiz,
         error,
         isValidating,
-    }=useSWR(`https://the-trivia-api.com/v2/questions?categories=music,sport_and_leisure,film_and_tv,arts_and_literature,history,`,fetcher);
-    // if(error) return<div>failed to load </div>;
-    // if(isValidating) return <div>Loading</div>;
+    }=useSWR(`https://the-trivia-api.com/v2/questions?categories=${category}`,fetcher);
+    if(error) return<div>failed to load </div>;
+    if(isValidating) return <div>Loading</div>;
 
     let questions =[];
     quiz.map((item,index)=>(
@@ -20,7 +25,9 @@ const Swr = ()=>{
         })
     ))
     
-    return questions
+   return (questions)
+}
+
 
 }
 export default Swr;

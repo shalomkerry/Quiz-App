@@ -3,6 +3,8 @@ import { useRef } from 'react'
 import Select from 'react-select'
 import './App.css'
 import quizStore from './stores/getQuiz'
+import Check from './components/tryingOutStore'
+import ShowQuestions from './components/ShowQuiz'
 //options
 const category= [
   {value:"general_knowledge", label:'General Knowledge'},
@@ -15,39 +17,61 @@ const category= [
   {value:"film_and_tv", label:'Film and Tv'},
   {value:"geography", label:'geography'},
 ]
+const difficulty = [
+  {value:"easy", label:'Easy'},
+  {value:"medium", label:'Medium'},
+  {value:"hard", label:'Hard'},
+  {value:'easy,medium,hard', label:'Random'}
+]
 function App() {
   const selectInputRef = useRef();
   //for the inputs
 
 const [categoryChoices, setCategoryChoice] = useState([])
-const [difficultyChoice,setDifficultyChoice] = useState([])
-const [number,setNumber] = useState();
+const [difficultyChoice,setDifficultyChoice] = useState()
+const [number,setNumber] = useState(10);
 //for state
   const categories = quizStore((state)=>  state.categories);
   const setCategories = quizStore((state)=> state.setCategory)
+  const setLevel = quizStore((state)=>state.setDifficult)
+ const setNo = quizStore((state)=>state.setNo) 
+  const resetCategory = quizStore((state)=>state.resetCategory)
 //functions to handle inputs
 
-function handleChange(categoryChoice){
-  setCategoryChoice(categoryChoice);
-}
+
 function handleSubmit(e){
+  if(difficultyChoice == undefined || categoryChoices == undefined){
+
+     alert('please choose at least one category')
+     
+  }
   e.preventDefault();
-  selectInputRef.current.clearValue();
-  setCategories(categoryChoices)
-console.log(categoryChoices)
-console.log(categories)
-}
-useEffect(()=>{
-  console.log(categories)
+categoryChoices.map((item)=>{
+  // selectInputRef.current.clearValue();
+ setCategories(item.value);
+
 })
+setLevel(difficultyChoice.value)
+setNo(number)
+
+console.log(quizStore.getState().categories)
+console.log(quizStore.getState().number)
+console.log(quizStore.getState().difficulty)
+
+}
   return (
     <>
     <h1 className='text-blue-800'>Quiz App</h1>
-    <form onSubmit={handleSubmit} className='w-9'>
-      <Select ref={selectInputRef}options={category} isMulti={true} onChange={handleChange} value={categoryChoices} makeAnimated/>
-      <input type="submit" value="Submit" />
+    <form className='w-9' onSubmit={handleSubmit}>
+      <Select ref={selectInputRef} options={category} isMulti={true} onChange={setCategoryChoice} value={categoryChoices} makeAnimated/>
+    <Select ref={selectInputRef} options={difficulty} value={difficultyChoice} onChange={setDifficultyChoice}/>
+      <label htmlFor="number">Enter the number of questions you</label>
+      <input type="number" name="number" id="" value={number} onChange={(e)=>{
+          setNumber(e.target.value)
+      }} min={10} max={25}/>
+      <input type="submit" />
     </form>
-    {/* <PreviewQuestions/> */}
+    <ShowQuestions/>
     </>
   )
 }

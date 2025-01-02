@@ -1,17 +1,19 @@
 import {create} from 'zustand';
 const quizStore= create((set)=>{
     return {
-        questions:[],
-        correctAnswer:'',
         categories:[],
-        setQuestions:(question)=>set((state)=>({questions:[...state.questions,question]})),
-        setCorrectAnswer:(correctAnswer)=>set(correctAnswer),
         setCategory:(category)=>set((state)=>{
             if(!state.categories.includes(category)){
-                return {category:[...state.categories,category]
-            }
-    }}),
-
+                console.log([...state.categories])
+                return {categories:[...state.categories,category]}
+           }
+           return state.categories
+        }),
+        resetCategory:()=>set({categories:[]}),
+        difficulty:'',
+        setDifficult:(level)=>set({difficulty:level}),
+        number:'',
+        setNo:(num)=>set({number:num}),
         }
     
     }
